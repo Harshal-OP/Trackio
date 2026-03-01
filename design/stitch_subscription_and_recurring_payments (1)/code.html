@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Money Manager - Recurring Payments</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#19e65e",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#112116",
+                        "surface-dark": "#1a2e22",
+                        "surface-light": "#ffffff",
+                        "text-main": "#f1f5f9",
+                        "text-muted": "#94a3b8",
+                        "border-color": "#2d4a36"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "sans": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #112116; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d4a36; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3d6a46; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-main h-screen flex overflow-hidden font-display">
+<!-- Sidebar -->
+<aside class="w-64 flex-shrink-0 border-r border-border-color bg-background-dark hidden md:flex flex-col h-full">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 ring-2 ring-border-color" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCufp-tmWkEN2czdgxWkxf0n1JgzFzM-3KAMQG1s0ROUIv2ZPsEsSNbW3k-fJoq0ENSMuKjKkdKT2hnlZPDRHjNxj6uhzjUUHxLiu00t4ut6lAaoZqLn-qZVkBtGJUulWrRAvrdbbCt_cDUaGK3CpgAAr0otHbuY4zwK0BBOsH4lorezT8oeG3D1kjWdiORz5JJCiOugTj2lyy0U3NTt3QiO7ET4YEjwakeR1Fb2bV7d8g0GefAi36ZS7RkfKKI7wx-h3PYBXKSqNoS");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-semibold leading-tight">Money Manager</h1>
+<p class="text-emerald-400/70 text-xs font-medium leading-tight">Pro Plan</p>
+</div>
+</div>
+<nav class="flex-1 px-3 py-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">receipt_long</span>
+<span class="text-sm font-medium">Transactions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-dark text-white shadow-sm ring-1 ring-white/5" href="#">
+<span class="material-symbols-outlined text-primary">credit_card</span>
+<span class="text-sm font-medium">Subscriptions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">savings</span>
+<span class="text-sm font-medium">Budget</span>
+</a>
+</nav>
+<div class="p-3 mt-auto">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-surface-dark hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto bg-background-light dark:bg-background-dark relative">
+<!-- Header -->
+<header class="sticky top-0 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-border-color px-8 py-5 flex justify-between items-center">
+<div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Recurring Payments</h2>
+<p class="text-slate-500 dark:text-text-muted text-sm mt-1">Manage monthly subscriptions and fixed expenses.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-lg hover:bg-slate-50 dark:hover:bg-opacity-80 transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                    Filter
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black bg-primary rounded-lg hover:bg-opacity-90 transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                    New Subscription
+                </button>
+</div>
+</header>
+<div class="p-8 max-w-7xl mx-auto w-full flex flex-col gap-8">
+<!-- Summary Stats -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-6 shadow-sm relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">payments</span>
+</div>
+<div class="relative z-10">
+<p class="text-slate-500 dark:text-text-muted text-sm font-medium mb-2">Total Monthly Cost</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-3xl font-bold text-slate-900 dark:text-white">$482.50</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span>
+                                2.5%
+                            </span>
+</div>
+<p class="text-xs text-slate-400 mt-2">vs. last month</p>
+</div>
+</div>
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-6 shadow-sm relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-blue-500">subscriptions</span>
+</div>
+<div class="relative z-10">
+<p class="text-slate-500 dark:text-text-muted text-sm font-medium mb-2">Active Subscriptions</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-3xl font-bold text-slate-900 dark:text-white">12</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_down</span>
+                                1
+                            </span>
+</div>
+<p class="text-xs text-slate-400 mt-2">1 cancelled this month</p>
+</div>
+</div>
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-6 shadow-sm relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-amber-500">calendar_clock</span>
+</div>
+<div class="relative z-10">
+<p class="text-slate-500 dark:text-text-muted text-sm font-medium mb-2">Upcoming (7 Days)</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-3xl font-bold text-slate-900 dark:text-white">$125.00</h3>
+</div>
+<p class="text-xs text-slate-400 mt-2">3 payments due soon</p>
+</div>
+</div>
+</section>
+<!-- Timeline View -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-semibold text-slate-900 dark:text-white">Payment Timeline</h3>
+<div class="flex gap-2">
+<button class="p-1 rounded hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 self-center">October 2023</span>
+<button class="p-1 rounded hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-6 overflow-x-auto">
+<div class="min-w-[800px] flex justify-between items-start relative pb-4">
+<!-- Horizontal Line -->
+<div class="absolute top-[27px] left-0 right-0 h-0.5 bg-slate-100 dark:bg-border-color z-0"></div>
+<!-- Timeline Item: Past -->
+<div class="flex flex-col items-center gap-3 relative z-10 w-24 opacity-50 grayscale">
+<p class="text-xs font-medium text-slate-500">Oct 1</p>
+<div class="w-3.5 h-3.5 rounded-full bg-slate-300 dark:bg-slate-600 ring-4 ring-white dark:ring-surface-dark"></div>
+<div class="flex flex-col items-center text-center mt-1">
+<div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-slate-500 text-[20px]">music_note</span>
+</div>
+<span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Spotify</span>
+<span class="text-[10px] text-slate-500">$9.99</span>
+</div>
+</div>
+<!-- Timeline Item: Today -->
+<div class="flex flex-col items-center gap-3 relative z-10 w-24">
+<p class="text-xs font-bold text-primary">Today</p>
+<div class="w-3.5 h-3.5 rounded-full bg-primary ring-4 ring-primary/20 shadow-[0_0_10px_rgba(25,230,94,0.5)]"></div>
+<div class="flex flex-col items-center text-center mt-1">
+<div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center mb-2 border border-red-500/20">
+<span class="material-symbols-outlined text-red-500 text-[20px]">movie</span>
+</div>
+<span class="text-xs font-semibold text-slate-900 dark:text-white">Netflix</span>
+<span class="text-[10px] text-slate-500 dark:text-text-muted">$15.99</span>
+</div>
+</div>
+<!-- Timeline Item: Future -->
+<div class="flex flex-col items-center gap-3 relative z-10 w-24">
+<p class="text-xs font-medium text-slate-500">Oct 15</p>
+<div class="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-500 ring-4 ring-white dark:ring-surface-dark"></div>
+<div class="flex flex-col items-center text-center mt-1">
+<div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-2 border border-blue-500/20">
+<span class="material-symbols-outlined text-blue-500 text-[20px]">wifi</span>
+</div>
+<span class="text-xs font-semibold text-slate-900 dark:text-white">Internet</span>
+<span class="text-[10px] text-slate-500 dark:text-text-muted">$89.00</span>
+</div>
+</div>
+<!-- Timeline Item: Future -->
+<div class="flex flex-col items-center gap-3 relative z-10 w-24">
+<p class="text-xs font-medium text-slate-500">Oct 18</p>
+<div class="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-500 ring-4 ring-white dark:ring-surface-dark"></div>
+<div class="flex flex-col items-center text-center mt-1">
+<div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center mb-2 border border-orange-500/20">
+<span class="material-symbols-outlined text-orange-500 text-[20px]">fitness_center</span>
+</div>
+<span class="text-xs font-semibold text-slate-900 dark:text-white">Gym</span>
+<span class="text-[10px] text-slate-500 dark:text-text-muted">$45.00</span>
+</div>
+</div>
+<!-- Timeline Item: Future -->
+<div class="flex flex-col items-center gap-3 relative z-10 w-24">
+<p class="text-xs font-medium text-slate-500">Oct 25</p>
+<div class="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-500 ring-4 ring-white dark:ring-surface-dark"></div>
+<div class="flex flex-col items-center text-center mt-1">
+<div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center mb-2 border border-purple-500/20">
+<span class="material-symbols-outlined text-purple-500 text-[20px]">design_services</span>
+</div>
+<span class="text-xs font-semibold text-slate-900 dark:text-white">Adobe</span>
+<span class="text-[10px] text-slate-500 dark:text-text-muted">$54.99</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Cards Grid -->
+<section class="flex flex-col gap-4 pb-12">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-semibold text-slate-900 dark:text-white">All Subscriptions</h3>
+<div class="flex gap-2">
+<button class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-white/5 rounded hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+                            Sort by: Cost
+                            <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+<!-- Card 1 -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer flex flex-col justify-between h-[200px]">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center border border-red-500/20 text-red-500">
+<span class="material-symbols-outlined">movie</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Netflix</h4>
+<p class="text-xs text-slate-500 dark:text-text-muted">Entertainment</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-xs font-medium text-primary mb-1">Due Today</p>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">$15.99<span class="text-sm font-normal text-slate-500 ml-1">/mo</span></h3>
+</div>
+</div>
+<div class="w-full bg-slate-100 dark:bg-black/40 h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 100%"></div>
+</div>
+<p class="text-[10px] text-slate-400 mt-2 text-right">Autopay enabled</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer flex flex-col justify-between h-[200px]">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500">
+<span class="material-symbols-outlined">wifi</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Internet Bill</h4>
+<p class="text-xs text-slate-500 dark:text-text-muted">Utilities</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-xs font-medium text-slate-400 mb-1">Due in 5 days</p>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">$89.00<span class="text-sm font-normal text-slate-500 ml-1">/mo</span></h3>
+</div>
+</div>
+<div class="w-full bg-slate-100 dark:bg-black/40 h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-blue-500 h-full rounded-full" style="width: 80%"></div>
+</div>
+<p class="text-[10px] text-slate-400 mt-2 text-right">Autopay enabled</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer flex flex-col justify-between h-[200px]">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center border border-orange-500/20 text-orange-500">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Gold's Gym</h4>
+<p class="text-xs text-slate-500 dark:text-text-muted">Health</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-xs font-medium text-slate-400 mb-1">Due in 8 days</p>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">$45.00<span class="text-sm font-normal text-slate-500 ml-1">/mo</span></h3>
+</div>
+</div>
+<div class="w-full bg-slate-100 dark:bg-black/40 h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-orange-500 h-full rounded-full" style="width: 65%"></div>
+</div>
+<p class="text-[10px] text-slate-400 mt-2 text-right">Manual payment</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer flex flex-col justify-between h-[200px]">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center border border-purple-500/20 text-purple-500">
+<span class="material-symbols-outlined">design_services</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Adobe Creative</h4>
+<p class="text-xs text-slate-500 dark:text-text-muted">Software</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-xs font-medium text-slate-400 mb-1">Due in 15 days</p>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">$54.99<span class="text-sm font-normal text-slate-500 ml-1">/mo</span></h3>
+</div>
+</div>
+<div class="w-full bg-slate-100 dark:bg-black/40 h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-purple-500 h-full rounded-full" style="width: 40%"></div>
+</div>
+<p class="text-[10px] text-slate-400 mt-2 text-right">Autopay enabled</p>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-color rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer flex flex-col justify-between h-[200px]">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500">
+<span class="material-symbols-outlined">music_note</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Spotify</h4>
+<p class="text-xs text-slate-500 dark:text-text-muted">Entertainment</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-xs font-medium text-slate-400 mb-1">Due in 25 days</p>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">$9.99<span class="text-sm font-normal text-slate-500 ml-1">/mo</span></h3>
+</div>
+</div>
+<div class="w-full bg-slate-100 dark:bg-black/40 h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 15%"></div>
+</div>
+<p class="text-[10px] text-slate-400 mt-2 text-right">Family Plan</p>
+</div>
+</div>
+<!-- Card Add New -->
+<div class="bg-slate-50 dark:bg-surface-dark/40 border border-dashed border-slate-300 dark:border-border-color rounded-xl p-5 hover:border-primary hover:bg-slate-100 dark:hover:bg-surface-dark transition-all cursor-pointer flex flex-col justify-center items-center h-[200px] text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined text-4xl mb-2">add_circle</span>
+<p class="font-medium">Add New Subscription</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

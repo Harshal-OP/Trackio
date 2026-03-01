@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trakio Money
 
-## Getting Started
+Trakio Money is an open-source personal finance app built with Next.js. It includes transaction tracking, subscriptions, budgets, reports, account management, and an advanced split-groups module.
 
-First, run the development server:
+## Status
+
+The project is in active MVP hardening. Core auth, dashboard domains, and split-group APIs are wired to backend services.
+
+## Core Features
+
+- Email/password authentication with protected dashboard routes
+- Transactions CRUD with export/filter/pagination
+- Subscriptions CRUD with status and timeline controls
+- Monthly budgets with computed spend/remaining
+- Deterministic reports and derived notifications
+- Split groups with invite code + passcode join flow
+- Group members, expenses, settlements, balances, and activity timeline
+
+## Tech Stack
+
+- Next.js 14 (App Router), React 18, TypeScript
+- MongoDB (primary data store)
+- Valkey (cache/queue compatible via Redis protocol)
+- ioredis client (works with Valkey)
+- Tailwind CSS
+- Zod validation for API contracts
+
+## Prerequisites
+
+- Node.js 18+
+- npm 9+
+- Docker + Docker Compose plugin
+
+## Quick Start
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create env file:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Start infrastructure (MongoDB + Valkey):
+
+```bash
+docker compose up -d
+```
+
+4. Start app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`http://localhost:3000`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
 
-## Learn More
+| Name | Required | Description |
+| --- | --- | --- |
+| `MONGODB_URI` | Yes | MongoDB connection string |
+| `VALKEY_URL` | Yes | Valkey connection string (Redis protocol URL) |
+| `JWT_SECRET` | Yes | Secret used for signing auth JWT cookies |
+| `NEXT_PUBLIC_APP_URL` | Yes | Public app URL |
+| `OPENAI_API_KEY` | No | Optional compatibility variable; reports are deterministic (no LLM required) |
+| `REDIS_URL` | No | Backward-compatible alias for `VALKEY_URL` |
 
-To learn more about Next.js, take a look at the following resources:
+## Useful Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev
+npm run dev:app
+npm run infra:up
+npm run infra:down
+npm run lint
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Docker Services
 
-## Deploy on Vercel
+- `mongodb` on `localhost:27017`
+- `valkey` on `localhost:6379`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Surface (High Level)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Auth/User: `/api/auth/*`, `/api/users/me*`
+- Transactions: `/api/transactions*`
+- Subscriptions: `/api/subscriptions*`
+- Budgets: `/api/budgets*`
+- Reports: `/api/reports/summary`, `/api/reports/ai-summary`
+- Split: `/api/split/groups*`
+
+## Project Layout
+
+```text
+src/
+  app/            # Routes, pages, API handlers
+  components/     # Shared UI + app shell components
+  lib/            # Utilities, validators, API helpers, auth
+  models/         # Mongoose models
+```
+
+## Troubleshooting
+
+- Docker Hub pull timeout (`TLS handshake timeout`):
+  - Retry pull and then compose:
+    - `docker pull mongo:7`
+    - `docker pull valkey/valkey:7-alpine`
+    - `docker compose up -d`
+- `401` on APIs:
+  - Re-authenticate and verify `JWT_SECRET` is set.
+- Database connection failures:
+  - Ensure `docker compose ps` shows `mongodb` and `valkey` healthy/running.
+
+## Contributing
+
+1. Fork and create a feature branch.
+2. Keep changes scoped and type-safe.
+3. Run `npm run lint` and `npm run build`.
+4. Open a PR with a clear summary and test notes.
+
+## Security
+
+- Do not commit secrets.
+- Use strong `JWT_SECRET` values in non-local environments.
+- Report vulnerabilities privately before opening public issues.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](./LICENSE).

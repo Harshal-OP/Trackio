@@ -1,0 +1,36 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: trakio-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: trakio
+      MONGO_INITDB_ROOT_PASSWORD: trakio_secret
+      MONGO_INITDB_DATABASE: trakio
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - trakio-network
+
+  valkey:
+    image: valkey/valkey:7-alpine
+    container_name: trakio-valkey
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - valkey_data:/data
+    networks:
+      - trakio-network
+
+volumes:
+  mongodb_data:
+    driver: local
+  valkey_data:
+    driver: local
+
+networks:
+  trakio-network:
+    driver: bridge
