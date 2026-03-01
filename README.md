@@ -146,3 +146,11 @@ Design assets and mockups are available in the `design/` directory in this repos
 - `design/stitch_subscription_and_recurring_payments (1)/screen.png` — alternate mockup image
 
 You can open the HTML files directly in a browser or view the PNGs for visual reference.
+
+### Gallery
+
+<p align="center">
+  <img src="design/dashboard.png" alt="Dashboard" width="30%" />
+  <img src="design/login.png" alt="Login" width="30%" />
+  <img src="design/spilit-group.png" alt="Split Group" width="30%" />
+</p>
