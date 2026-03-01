@@ -1,7 +1,14 @@
-# Trakio Money
+Trackio is a modern open-source AI finance platform that helps you track expenses and subscriptions, set reminders, create budgets, split spending with friends, and gain insights through powerful visualizations and reports.
 
-Trakio Money is an open-source personal finance app built with Next.js. It includes transaction tracking, subscriptions, budgets, reports, account management, and an advanced split-groups module.
+Built with Next.js, MongoDB, Valkyrie, TypeScript, and Zod.
 
+<p align="center">
+  <img src="design/login.png" alt="Login" width="30%" />
+</p>
+<p align="center">
+    <img src="design/dashboard.png" alt="Dashboard" width="30%" />
+    <img src="design/spilit-group.png" alt="Split Group" width="30%" />
+</p>
 ## Status
 
 The project is in active MVP hardening. Core auth, dashboard domains, and split-group APIs are wired to backend services.
@@ -147,10 +154,3 @@ Design assets and mockups are available in the `design/` directory in this repos
 
 You can open the HTML files directly in a browser or view the PNGs for visual reference.
 
-### Gallery
-
-<p align="center">
-  <img src="design/dashboard.png" alt="Dashboard" width="30%" />
-  <img src="design/login.png" alt="Login" width="30%" />
-  <img src="design/spilit-group.png" alt="Split Group" width="30%" />
-</p>
