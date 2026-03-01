@@ -135,3 +135,14 @@ src/
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](./LICENSE).
+
+## Design
+
+Design assets and mockups are available in the `design/` directory in this repository. Key files:
+
+- `design/stitch_subscription_and_recurring_payments/code.html` — prototype HTML for subscription flows
+- `design/stitch_subscription_and_recurring_payments/screen.png` — mockup image
+- `design/stitch_subscription_and_recurring_payments (1)/code.html` — alternate prototype
+- `design/stitch_subscription_and_recurring_payments (1)/screen.png` — alternate mockup image
+
+You can open the HTML files directly in a browser or view the PNGs for visual reference.
